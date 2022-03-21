@@ -1,4 +1,5 @@
 import 'package:downmusic/controllers/login_controller.dart';
+import 'package:downmusic/controllers/reparir_components_controller.dart';
 import 'package:downmusic/widgets/button_widget.dart';
 import 'package:downmusic/widgets/text_button_widget.dart';
 import 'package:downmusic/widgets/textfield_widget.dart';
@@ -8,19 +9,19 @@ import 'package:get/get.dart';
 class LoginWidget extends StatelessWidget {
   final void Function() onTap;
   final LoginController loginCtrl = Get.put(LoginController());
+  final repairController = Get.put(RepairComponentController());
 
   LoginWidget({Key? key, required this.onTap}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final LoginController loginCtrl = Get.put(LoginController());
     final emailCtrl = TextEditingController(text: loginCtrl.email.value),
         passwordCtrl = TextEditingController(text: loginCtrl.password.value);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Obx(() {
           var messageValid = loginCtrl.validateEmail();
@@ -72,16 +73,21 @@ class LoginWidget extends StatelessWidget {
             await loginCtrl.login();
           },
         ),
-        ButtonWidget(
-          title: 'sign_in_with_google'.tr,
-          icon: Icons.android,
-          color: Colors.black87,
-          textColor: Colors.white,
-          hasBorder: false,
-          onTap: () async {
-            await loginCtrl.loginWithGoogle();
-          },
-        ),
+        Obx(() {
+          var isReady = repairController.googleButtonIsVisible.value;
+          return isReady
+              ? ButtonWidget(
+                  title: 'sign_in_with_google'.tr,
+                  icon: Icons.android,
+                  color: Colors.black87,
+                  textColor: Colors.white,
+                  hasBorder: false,
+                  onTap: () async {
+                    await loginCtrl.loginWithGoogle();
+                  },
+                )
+              : Container();
+        }),
         TextButtonWidget(
           title: "no_have_account".tr,
           onTap: onTap,

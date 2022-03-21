@@ -1,4 +1,5 @@
 import 'package:downmusic/controllers/login_controller.dart';
+import 'package:downmusic/controllers/reparir_components_controller.dart';
 import 'package:downmusic/widgets/button_widget.dart';
 import 'package:downmusic/widgets/text_button_widget.dart';
 import 'package:downmusic/widgets/textfield_widget.dart';
@@ -10,10 +11,12 @@ class SignUpWidget extends StatelessWidget {
   final void Function() googleOnTap;
   final LoginController loginCtrl = Get.put(LoginController());
 
-  SignUpWidget({Key? key, required this.onTap, required this.googleOnTap}) : super(key: key);
+  SignUpWidget({Key? key, required this.onTap, required this.googleOnTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var repairController = Get.put(RepairComponentController());
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final emailCtrl = TextEditingController(text: loginCtrl.email.value),
         passwordCtrl = TextEditingController(text: loginCtrl.password.value),
@@ -90,14 +93,20 @@ class SignUpWidget extends StatelessWidget {
             await loginCtrl.register();
           },
         ),
-        ButtonWidget(
-          title: 'sign_up_with_google'.tr,
-          icon: Icons.android,
-          color: Colors.black87,
-          textColor: Colors.white,
-          hasBorder: false,
-          onTap: googleOnTap,
-        ),
+        Obx(() {
+          var isReady = repairController.googleButtonIsVisible.value;
+
+          return isReady
+              ? ButtonWidget(
+                  title: 'sign_up_with_google'.tr,
+                  icon: Icons.android,
+                  color: Colors.black87,
+                  textColor: Colors.white,
+                  hasBorder: false,
+                  onTap: googleOnTap,
+                )
+              : Container();
+        }),
         TextButtonWidget(
           title: 'have_account'.tr,
           onTap: onTap,

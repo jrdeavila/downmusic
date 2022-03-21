@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1062982423289",
-    "project_id": "downmusic-fab0c",
-    "storage_bucket": "downmusic-fab0c.appspot.com"
+    "project_number": "989371769004",
+    "project_id": "school-academic-328601",
+    "storage_bucket": "school-academic-328601.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1062982423289:android:0c01c05d26a42bb01f4828",
+        "mobilesdk_app_id": "1:989371769004:android:8b01ec0e182ce438e3ff09",
         "android_client_info": {
           "package_name": "com.example.downmusic"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1062982423289-g8h1lrjfpgqnu02p7rl83qun2io06isp.apps.googleusercontent.com",
+          "client_id": "989371769004-unnr0qc6pvun75qc2qoa4nmqvg0lkm7f.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC_S4vL2lC9wqJNclAVVBtRWhcLA6yQmTY"
+          "current_key": "AIzaSyBF0x4NbzRQyV0t1gzujOhzmY0xPR3xl1A"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1062982423289-g8h1lrjfpgqnu02p7rl83qun2io06isp.apps.googleusercontent.com",
+              "client_id": "989371769004-unnr0qc6pvun75qc2qoa4nmqvg0lkm7f.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

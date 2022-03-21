@@ -1,3 +1,9 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:downmusic/core/models/docente.dart';
+import 'package:downmusic/core/models/estudiante.dart';
+import 'package:downmusic/core/models/usuario.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -7,21 +13,32 @@ class FirebaseAuthController extends GetxController {
   static FirebaseAuthController authInstance = Get.find();
 
   late Rx<User?> firebaseUser;
+  late Rx<Usuario?> usuarioInfo;
 
   @override
   void onReady() {
     super.onReady();
     firebaseUser = Rx<User?>(constants.firebaseApp.currentUser);
-    firebaseUser.bindStream(constants.firebaseApp.userChanges());
+    usuarioInfo = Rx<Usuario?>(null);
+    firebaseUser.bindStream(getCurrentUser());
     ever(firebaseUser, _setInitialScreen);
   }
 
-  _setInitialScreen(User? user) {
-    if (user != null) {
-      Get.offAllNamed('/home');
-    } else {
+  _setInitialScreen(User? user) async {
+    if (user == null) {
       Get.offAllNamed('/authentication');
+    } else {
+      usuarioInfo(await getUserInfo());
+      if (usuarioInfo.value == null) {
+        Get.offAllNamed('/register-user-info');
+      } else {
+        Get.offAllNamed('/home');
+      }
     }
+  }
+
+  Stream<User?> getCurrentUser() async* {
+    yield* constants.firebaseApp.userChanges();
   }
 
   Future<void> register(String email, String password) async {
@@ -80,7 +97,7 @@ class FirebaseAuthController extends GetxController {
     var title = 'error'.tr;
     try {
       messageTr = 'logout_message'.tr;
-      constants.firebaseApp.signOut();
+      await constants.firebaseApp.signOut();
       title = 'logout_success'.tr;
       Get.snackbar(title, messageTr, duration: const Duration(seconds: 3));
     } on FirebaseAuthException catch (e) {
@@ -91,6 +108,21 @@ class FirebaseAuthController extends GetxController {
       }
       messageTr = messageTr.tr;
       Get.snackbar(title, messageTr, duration: const Duration(seconds: 3));
+    }
+  }
+
+  Future<Usuario?> getUserInfo() async {
+    final uid = firebaseUser.value?.uid;
+    log('uid: $uid');
+    final doc =
+        await FirebaseFirestore.instance.collection('usuarios').doc(uid).get();
+
+    if (doc.data()?['role'] == 'docente') {
+      return Docente.fromFirebase(doc.data()!);
+    } else if (doc.data()?['role'] == 'estudiante') {
+      return Estudiante.fromFirebase(doc.data()!);
+    } else {
+      return null;
     }
   }
 }
